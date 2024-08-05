@@ -1,0 +1,7 @@
+{
+    "v": "2024.08.05:1.0.0",
+    "maxCost":123456789,
+    "maxInitialPayment":1234567,
+    "avgAreaCost": 123456,
+    "minArea": 98
+}

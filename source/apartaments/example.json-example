@@ -1,0 +1,14 @@
+[
+    {
+        "plan": "https://example.com/example/1234.jpg",
+        "view":"example",
+        "cost":12345678,
+        "area":98.76,
+        "cardinalPoints":"example",
+        "floor":12,
+        "windowsNum":3,
+        "isRamadable": true,
+        "links": ["https://example.com/example/1234"]
+    },
+    { ... }, ...
+]

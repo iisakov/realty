@@ -1,0 +1,9 @@
+[
+    {
+        "name": "Example",
+        "label": "example",
+        "score": 1,
+        "links": ["https://example.com/example/1234/", "https://example.com/example/4321/"]
+    },
+    {...}, ...
+]

@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Example",
+        "label": "example",
+        "location":"example",
+        "yard":["example1", "example2", "example3"],
+        "parking": ["example1", "example2"],
+        "finishing": "example",
+        "maxFloor": 12,
+        "infrastructure": ["example", "example"],
+        "address": "​example 1",
+        "completionDate": "1234-01-12 - 1234-02-21",
+        "links": ["https://example.com/example/1234/", "https://example.com/example/4321/"]
+    },
+    { ... }, ...
+]
