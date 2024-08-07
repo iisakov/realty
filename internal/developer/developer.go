@@ -24,7 +24,7 @@ func (d Developer) String() string {
 		"# %s\n\n- **Базовый коэффициент:** %.2f\n- **Ссылки:** %s\n## Жилые комплексы застройщика %s\n%s",
 		d.Name,
 		d.Score,
-		strings.Join(d.Links, ", ")+"\n",
+		"<"+strings.Join(d.Links, ">, <")+">\n",
 		d.Name,
 		strings.Join(rs, "\n"),
 	)
@@ -78,6 +78,18 @@ func (ds Developers) ResidentialByLabel(l string) *residential.Residential {
 		}
 	}
 	return nil
+}
+
+func (ds Developers) CountApartaments() (result int) {
+	for _, d := range ds {
+		for _, r := range d.Residentials {
+			for range r.Apartments {
+				result++
+			}
+		}
+	}
+
+	return result
 }
 
 func (ds Developers) Load() {}

@@ -1,31 +1,45 @@
 package factor
 
 type Factor struct {
-	Type  string  `json:"type"`
-	Label string  `json:"label"`
-	Score float64 `json:"score"`
+	Factor string             `json:"factor"`
+	Value  map[string]float64 `json:"value"`
+	Type   string             `json:"type"`
+}
+
+func (f Factor) ByValue(v string) (float64, bool) {
+	for fv, s := range f.Value {
+		if fv == v {
+			return s, true
+		}
+	}
+	return 1, false
 }
 
 type Factors []Factor
 
-func (fs Factors) ByType(t string) (Factors, bool) {
-	result, ok := Factors{}, false
+func (fs Factors) FactorList() (result []string) {
 	for _, f := range fs {
-		if f.Type == t {
-			result = append(result, f)
-			ok = true
-		}
+		result = append(result, f.Factor)
 	}
-	return result, ok
+	return result
 }
 
-func (fs Factors) ByLabel(l string) (float64, bool) {
+func (fs Factors) ByFactor(factor string) (Factor, bool) {
 	for _, f := range fs {
-		if f.Label == l {
-			return f.Score, true
+		if f.Factor == factor {
+			return f, true
 		}
 	}
-	return 0, false
+	return Factor{}, false
+}
+
+func (fs Factors) ByValue(v string) (float64, bool) {
+	for _, f := range fs {
+		if s, ok := f.ByValue(v); ok {
+			return s, true
+		}
+	}
+	return 1, false
 }
 
 func (fs Factors) Load() {}
