@@ -7,6 +7,7 @@ import (
 	"realty/internal/factor"
 	"reflect"
 	"slices"
+	"sort"
 	"strings"
 
 	"golang.org/x/text/cases"
@@ -19,19 +20,24 @@ type score struct {
 }
 
 func (s score) FormatToCSV() (header []string, value [][]string) {
-	for _, rd := range s.RowDescriptions {
-		value = append(value, []string{})
-		for rdk := range rd {
-			if !slices.Contains(header, rdk) {
-				header = append(header, rdk)
-			}
-		}
-	}
 
 	for _, v := range s.Value {
 		for vk := range v {
 			if !slices.Contains(header, vk) && vk != "Total" {
 				header = append(header, vk)
+			}
+		}
+	}
+
+	sort.Slice(header, func(i, j int) bool {
+		return header[j] > header[i]
+	})
+
+	for _, rd := range s.RowDescriptions {
+		value = append(value, []string{})
+		for rdk := range rd {
+			if !slices.Contains(header, rdk) {
+				header = append(header, rdk)
 			}
 		}
 	}
@@ -119,9 +125,13 @@ func (s *Scorer) Estimate(ds developer.Developers, fs factor.Factors) {
 				s.RowDescriptions[rowNum]["tag"] = tag
 				s.RowDescriptions[rowNum]["link"] = link
 
-				s.Value[rowNum]["AreaCost"] = roundFloat(float64(aAreaCost)/maxAreaCost, 2)
-				s.Value[rowNum]["Area"] = roundFloat(maxArea/float64(a.Area), 2)
-				s.Value[rowNum]["Cost"] = roundFloat(float64(a.Cost)/float64(maxCost), 2)
+				s.Value[rowNum]["AreaCostScore"] = roundFloat(float64(aAreaCost)/maxAreaCost, 2)
+				s.Value[rowNum]["AreaScore"] = roundFloat(maxArea/float64(a.Area), 2)
+				s.Value[rowNum]["CostScore"] = roundFloat(float64(a.Cost)/float64(maxCost), 2)
+
+				s.Value[rowNum]["AreaCost"] = aAreaCost
+				s.Value[rowNum]["Area"] = a.Area
+				s.Value[rowNum]["Cost"] = float64(a.Cost)
 
 				s.Value[rowNum]["divAreaCost"] = roundFloat(aAreaCost-s.AvgAreaCost, 2)
 				s.Value[rowNum]["divArea"] = roundFloat(a.Area-s.MinArea, 2)
