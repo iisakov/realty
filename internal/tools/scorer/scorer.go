@@ -1,10 +1,12 @@
 package scorer
 
 import (
+	"fmt"
 	"math"
 	"realty/internal/developer"
 	"realty/internal/factor"
 	"reflect"
+	"slices"
 	"strings"
 
 	"golang.org/x/text/cases"
@@ -16,8 +18,45 @@ type score struct {
 	Value           []map[string]float64
 }
 
-func (s score) ToCSV() {
-	//TODO Экспорт в CSV
+func (s score) FormatToCSV() (header []string, value [][]string) {
+	for _, rd := range s.RowDescriptions {
+		value = append(value, []string{})
+		for rdk := range rd {
+			if !slices.Contains(header, rdk) {
+				header = append(header, rdk)
+			}
+		}
+	}
+
+	for _, v := range s.Value {
+		for vk := range v {
+			if !slices.Contains(header, vk) && vk != "Total" {
+				header = append(header, vk)
+			}
+		}
+	}
+
+	header = append(header, "Total")
+
+	for _, h := range header {
+		i := 0
+		for _, rd := range s.RowDescriptions {
+			if v, ok := rd[h]; ok {
+				value[i] = append(value[i], v)
+			}
+			i++
+		}
+		i = 0
+		for _, v := range s.Value {
+			if vv, ok := v[h]; ok {
+				value[i] = append(value[i], fmt.Sprintf("%.2f", vv))
+			}
+			i++
+		}
+		i = 0
+	}
+
+	return
 }
 
 type Scorer struct {
@@ -132,7 +171,7 @@ func (s *Scorer) Estimate(ds developer.Developers, fs factor.Factors) {
 
 				windowsNumScore := float64(a.WindowsNum)/100.00 + 1
 				s.Value[rowNum]["windowsNum"] = windowsNumScore
-				totalScore += windowsNumScore
+				totalScore *= windowsNumScore
 
 				s.Value[rowNum]["Total"] = roundFloat(totalScore, 2)
 				rowNum++

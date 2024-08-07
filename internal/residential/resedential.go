@@ -28,7 +28,6 @@ func (r Residential) String() string {
 	}
 
 	return fmt.Sprintf(
-
 		"%s\n\n- **Расположение:** %s\n- **Окончание строительства:** %s\n- **Двор:** %s\n- **Парковка:** %s\n- **Отделка:** %s\n- **Максимальный этаж:** %d\n- **Инфраструктура:** %s\n- **Адрес:** %s\n- **Ссылки:** %s\n#### Квартиры в %s\n%s",
 		r.Name,
 		r.Location,
@@ -39,9 +38,9 @@ func (r Residential) String() string {
 		r.MaxFloor,
 		strings.Join(r.Infrastructure, ", "),
 		r.Address,
-		strings.Join(r.Links, ", ")+"\n",
+		"<"+strings.Join(r.Links, ">, <")+">\n",
 		r.Name,
-		strings.Join(as, ",\n"),
+		strings.Join(as, ","),
 	)
 }
 

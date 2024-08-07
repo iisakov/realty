@@ -1,6 +1,7 @@
 package loader
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -56,10 +57,13 @@ func ToCSV(fp string, s scorer.Scorer) {
 
 	defer f.Close()
 
-	_, err = f.WriteString(" ")
-	if err != nil {
-		log.Fatal(err)
-	}
+	writer := csv.NewWriter(f)
+	defer writer.Flush()
+
+	h, v := s.FormatToCSV()
+	writer.Write(h)
+	writer.WriteAll(v)
+
 }
 
 func Init(ds developer.Developers) {
