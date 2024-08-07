@@ -25,7 +25,6 @@ func init() {
 
 func main() {
 	s.Estimate(ds, fs)
-
 	loader.ToCSV("out/realty.csv", s)
 	loader.Dump("out/realty.md", ds)
 }
