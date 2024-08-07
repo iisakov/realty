@@ -9,6 +9,7 @@ import (
 	"realty/internal/apartment"
 	"realty/internal/developer"
 	"realty/internal/residential"
+	"realty/internal/tools/scorer"
 	"strings"
 )
 
@@ -37,10 +38,25 @@ func Dump(fp string, d fmt.Stringer) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// remember to close the file
+
 	defer f.Close()
 
 	_, err = f.WriteString(d.String())
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func ToCSV(fp string, s scorer.Scorer) {
+
+	f, err := os.Create(fp)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer f.Close()
+
+	_, err = f.WriteString(" ")
 	if err != nil {
 		log.Fatal(err)
 	}

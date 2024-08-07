@@ -80,4 +80,16 @@ func (ds Developers) ResidentialByLabel(l string) *residential.Residential {
 	return nil
 }
 
+func (ds Developers) CountApartaments() (result int) {
+	for _, d := range ds {
+		for _, r := range d.Residentials {
+			for range r.Apartments {
+				result++
+			}
+		}
+	}
+
+	return result
+}
+
 func (ds Developers) Load() {}
