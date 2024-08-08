@@ -125,8 +125,8 @@ func (s *Scorer) Estimate(ds developer.Developers, fs factor.Factors) {
 				s.RowDescriptions[rowNum]["tag"] = tag
 				s.RowDescriptions[rowNum]["link"] = link
 
-				s.Value[rowNum]["AreaCostScore"] = roundFloat(float64(aAreaCost)/maxAreaCost, 2)
-				s.Value[rowNum]["AreaScore"] = roundFloat(maxArea/float64(a.Area), 2)
+				s.Value[rowNum]["AreaCostScore"] = roundFloat(maxAreaCost/float64(aAreaCost), 2)
+				s.Value[rowNum]["AreaScore"] = roundFloat(1+float64(a.Area)/maxArea/5, 2)
 				s.Value[rowNum]["CostScore"] = roundFloat(float64(a.Cost)/float64(maxCost), 2)
 
 				s.Value[rowNum]["AreaCost"] = aAreaCost
@@ -137,7 +137,7 @@ func (s *Scorer) Estimate(ds developer.Developers, fs factor.Factors) {
 				s.Value[rowNum]["divArea"] = roundFloat(a.Area-s.MinArea, 2)
 				s.Value[rowNum]["divCost"] = roundFloat(float64(s.MaxCost-a.Cost), 2)
 
-				baseScore := roundFloat(float64(2-float64(aAreaCost)/maxAreaCost*maxArea/float64(a.Area)*float64(a.Cost)/float64(maxCost)), 2)
+				baseScore := roundFloat(float64(s.Value[rowNum]["AreaCostScore"]*s.Value[rowNum]["AreaScore"]*s.Value[rowNum]["CostScore"]), 2)
 				s.Value[rowNum]["baseScore"] = baseScore
 
 				totalScore *= baseScore
@@ -182,6 +182,19 @@ func (s *Scorer) Estimate(ds developer.Developers, fs factor.Factors) {
 				windowsNumScore := float64(a.WindowsNum)/100.00 + 1
 				s.Value[rowNum]["windowsNum"] = windowsNumScore
 				totalScore *= windowsNumScore
+
+				overPaymentPerM := 0.0
+
+				if float64(s.Value[rowNum]["divAreaCost"]) >= 0 {
+					overPaymentPerM = float64(s.Value[rowNum]["divAreaCost"] * a.Area)
+				}
+
+				overPayment := overPaymentPerM + float64(a.Cost)*0.2
+				overPaymentScore := float64(s.MaxInitialPayment) / overPayment
+				s.Value[rowNum]["overPaymentScore"] = roundFloat(overPaymentScore, 2)
+				totalScore *= overPaymentScore
+
+				s.Value[rowNum]["overPayment"] = roundFloat(overPayment, 2)
 
 				s.Value[rowNum]["Total"] = roundFloat(totalScore, 2)
 				rowNum++
